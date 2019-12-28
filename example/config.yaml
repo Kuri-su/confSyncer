@@ -1,0 +1,8 @@
+---
+gitRepo: git@github.com:Kurisu-homework-set/config_tmp.git
+gitPullTimeInternal: 30 # second
+maps:
+  - src: /a.yaml
+    dist: /tmp/.config/a/config
+  - src: /b.yaml
+    dist: /tmp/.config/b/config
