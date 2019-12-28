@@ -1,0 +1,7 @@
+---
+gitRepo: git@gitlab.com:xxx/xxx.git
+configs:
+  - src: /a.json
+    dist: /home/kurisu/.config/a/config
+  - src: /b.json
+    dist: /home/kurisu/.config/b/config
