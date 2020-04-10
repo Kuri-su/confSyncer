@@ -2,9 +2,10 @@
 
 A little sync config files tool in the Linux.
 
-[**WIP**]
-
 ## What's this
+
+## Features
+
 
 ## Install
 ```shell
@@ -12,8 +13,12 @@ $ go get github.com/Kuri-su/confSyncer
 $ go install github.com/Kuri-su/confSyncer
 ```
 
-## Features
+### In Docker
+```shell
+$ docker run -d kurisux/conf-syncer
+```
 
+## How to Use
 
 ## LICENSE
 `GPL-3.0`
