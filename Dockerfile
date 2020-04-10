@@ -4,13 +4,9 @@ FROM ubuntu:latest
 USER root
 LABEL maintainer="misaki.zhcy@gmail.com"
 
-RUN  echo "export GO111MODULE=on" >> /etc/profile \
-    && echo "export GOPATH=/root/go" >> /etc/profile \
-    && source /etc/profile
-
-RUN apt update && apk isntall go git musl-dev xz binutils -y \
-    && cd \
-    && source /etc/profile \
+RUN apt update && apk install go git musl-dev xz binutils -y \
+    && export GO111MODULE=on \
+    && export GOPATH=/root/go \
     && go get github.com/Kuri-su/confSyncer \
     && go install github.com/Kuri-su/confSyncer
 
