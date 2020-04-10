@@ -4,7 +4,7 @@ FROM ubuntu:latest
 USER root
 LABEL maintainer="misaki.zhcy@gmail.com"
 
-RUN apt update && apk install go git musl-dev xz binutils -y \
+RUN apt update && apt install go git musl-dev xz binutils -y \
     && export GO111MODULE=on \
     && export GOPATH=/root/go \
     && go get github.com/Kuri-su/confSyncer \
