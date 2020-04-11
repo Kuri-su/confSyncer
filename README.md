@@ -10,7 +10,6 @@ A little sync config files tool in the Linux.
 ## Install
 ```shell
 $ go get github.com/Kuri-su/confSyncer
-$ go install github.com/Kuri-su/confSyncer
 ```
 
 ### In Docker

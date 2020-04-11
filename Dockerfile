@@ -7,8 +7,7 @@ LABEL maintainer="misaki.zhcy@gmail.com"
 RUN apk update && apk add go git musl-dev xz binutils \
     && export GO111MODULE=on \
     && export GOPATH=/root/go \
-    && go get github.com/Kuri-su/confSyncer \
-    && go install github.com/Kuri-su/confSyncer
+    && go get github.com/Kuri-su/confSyncer
 
 RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz \
     && xz -d upx-3.96-amd64_linux.tar.xz \
@@ -23,8 +22,8 @@ RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux
     && cp confSyncer /usr/local/bin
 
 # step 1
-FROM ubuntu:latest
+FROM alpine:latest
 
 COPY --from=0 /usr/local/bin/confSyncer /usr/local/bin/
 
-CMD ["confSyncer"," deamon"]
+CMD ["confSyncer","deamon"]

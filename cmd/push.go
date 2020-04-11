@@ -62,9 +62,9 @@ func ConfigPush() error {
 		}
 	}
 
-	configPaths := viper.GetStringMapString("maps")
+	maps := viper.GetStringMapString("maps")
 
-	for src, dist := range configPaths {
+	for src, dist := range maps {
 		err := unit.Copy(dist, TmpDirPath+src)
 		if err != nil {
 			return err
