@@ -1,10 +1,10 @@
 # step 0
-FROM ubuntu:latest
+FROM golang:1.14.2-alpine3.11
 
 USER root
 LABEL maintainer="misaki.zhcy@gmail.com"
 
-RUN apt update && apt install go git musl-dev xz binutils -y \
+RUN apk update && apk add go git musl-dev xz binutils \
     && export GO111MODULE=on \
     && export GOPATH=/root/go \
     && go get github.com/Kuri-su/confSyncer \
