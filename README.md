@@ -1,6 +1,6 @@
 # confSyncer
 
-<script id="asciicast-uZpnO3DtrqWW6VG8CGRK0D8qp" src="https://asciinema.org/a/uZpnO3DtrqWW6VG8CGRK0D8qp.js" async></script>
+
 
 A little sync config files tool in the Linux.
 
