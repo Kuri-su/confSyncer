@@ -1,4 +1,4 @@
-package cmd
+package confSyncer
 
 import (
 	"github.com/fatih/color"
