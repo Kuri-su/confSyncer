@@ -1,5 +1,5 @@
 /*
-Copyright © 2019 NAME HERE <EMAIL ADDRESS>
+Copyright © 2020 NAME HERE <EMAIL ADDRESS>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,25 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package confSyncer
+package main
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/fatih/color"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
-// pushCmd represents the push command
-var pushCmd = &cobra.Command{
-	Use:   "push",
-	Short: "push",
-	Long:  `push`,
+// pullCmd represents the pull command
+var pullCmd = &cobra.Command{
+	Use:   "pull",
+	Short: "pull",
+	Long:  `pull`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := ConfigPush()
+		err := ConfigPull()
 		if err != nil {
 			color.Red(err.Error())
 			return
@@ -40,37 +41,56 @@ var pushCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(pushCmd)
+	rootCmd.AddCommand(pullCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// pushCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// pullCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// pushCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// pullCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-func ConfigPush() error {
+
+func ConfigPull() error {
 	if !unit.IsDir(TmpDirPath) {
-		return errors.New("not found dir")
+		err := unit.GitClone(viper.GetString("gitRepo"), TmpDirPath)
+		if err != nil {
+			return err
+		}
 	} else {
-		err := unit.GitPush(TmpDirPath)
+		err := unit.GitPull(TmpDirPath)
 		if err != nil {
 			return err
 		}
 	}
 
-	maps := viper.GetStringMapString("maps")
+	c := viper.Get("maps")
+	if c == nil {
+		return nil
+	}
 
-	for src, dist := range maps {
-		err := unit.Copy(dist, TmpDirPath+src)
+	str, err := jsoniter.MarshalToString(c)
+	if err != nil {
+		return err
+	}
+
+	var maps []Path
+	err = jsoniter.UnmarshalFromString(str, &maps)
+	if err != nil {
+		return err
+	}
+
+	for _, copyMap := range maps {
+		unit.MakeDirWithFilePath(copyMap.Dist)
+		err = unit.Copy(TmpDirPath+copyMap.Src, copyMap.Dist)
 		if err != nil {
 			return err
 		}
 	}
 
-	color.Green("Configs push finish!")
+	fmt.Println("Configs pull finish!")
 	return nil
 }

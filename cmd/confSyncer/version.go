@@ -1,4 +1,4 @@
-package confSyncer
+package main
 
 import (
 	"github.com/fatih/color"
