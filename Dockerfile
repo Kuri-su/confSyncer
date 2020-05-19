@@ -7,8 +7,8 @@ LABEL maintainer="misaki.zhcy@gmail.com"
 RUN apk update && apk add go git musl-dev xz binutils \
     && export GO111MODULE=on \
     && export GOPATH=/root/go \
-    && git clone https://github.com/Kuri-su/confSyncer.git \
-    && cd cmd/confsyncer \
+    && git clone https://github.com/Kuri-su/confSyncer.git confSyncer \
+    && cd confSyncer/cmd/confsyncer \
     && go build -o confsyncer \
     && mkdir -p /root/go/bin/ \
     && cp confsyncer /root/go/bin/
