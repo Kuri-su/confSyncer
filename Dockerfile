@@ -10,7 +10,8 @@ RUN apk update && apk add go git musl-dev xz binutils \
     && git clone https://github.com/Kuri-su/confSyncer.git \
     && cd cmd/confsyncer \
     && go build -o confsyncer \
-    && cp confsyncer /root/go/
+    && mkdir -p /root/go/bin/ \
+    && cp confsyncer /root/go/bin/
 
 RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz \
     && xz -d upx-3.96-amd64_linux.tar.xz \
