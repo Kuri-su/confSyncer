@@ -19,11 +19,9 @@
 package confsyncer
 
 type Config struct {
-	GitRepo string `yaml:"gitRepo"`
-	GitPull struct {
-		TimeInternal int `yaml:"timeInternal"`
-	} `yaml:"gitPull"`
-	Configs []Path `yaml:"configs"`
+	GitRepo             string `yaml:"gitRepo"`
+	GitPullTimeInternal int    `yaml:"gitPullTimeInternal"`
+	Maps                []Path `yaml:"maps"`
 }
 
 type Path struct {

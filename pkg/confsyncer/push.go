@@ -19,33 +19,48 @@ package confsyncer
 
 import (
 	"errors"
+	"log"
 
 	"github.com/fatih/color"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/Kuri-su/confSyncer/pkg/confsyncer/ctl"
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
 func ConfigPush(cmd *cobra.Command, args []string) {
 	f := func() error {
-		if !unit.IsDir(ctl.TmpDirPath) {
+		// check
+		if !unit.IsDir(TmpDirPath) {
 			return errors.New("not found dir")
-		} else {
-			err := unit.GitPush(ctl.TmpDirPath)
-			if err != nil {
-				color.Red(err.Error())
-			}
 		}
 
-		maps := viper.GetStringMapString("maps")
+		// TODO package this code section
+		// get config
+		var maps []Path
+		marshal, err := jsoniter.MarshalToString(viper.Get("maps"))
+		if err != nil {
+			return err
+		}
+		err = jsoniter.UnmarshalFromString(marshal, &maps)
+		if err != nil {
+			return err
+		}
 
-		for src, dist := range maps {
-			err := unit.Copy(dist, ctl.TmpDirPath+src)
+		for _, pathStruct := range maps {
+			copySrc := pathStruct.Dist
+			copyDist := TmpDirPath + pathStruct.Src
+			log.Println(copySrc, copyDist)
+			err := unit.Copy(copySrc, copyDist)
 			if err != nil {
 				return err
 			}
+		}
+
+		err = unit.GitCommitAndPush(TmpDirPath)
+		if err != nil {
+			color.Red(err.Error())
 		}
 
 		color.Green("Configs push finish!")

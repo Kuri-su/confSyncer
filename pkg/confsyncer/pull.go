@@ -26,19 +26,18 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/Kuri-su/confSyncer/pkg/confsyncer/ctl"
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
 func ConfigPull(cmd *cobra.Command, args []string) {
 	f := func(cmd *cobra.Command, args []string) error {
-		if !unit.IsDir(ctl.TmpDirPath) {
-			err := unit.GitClone(viper.GetString("gitRepo"), ctl.TmpDirPath)
+		if !unit.IsDir(TmpDirPath) {
+			err := unit.GitClone(viper.GetString("gitRepo"), TmpDirPath)
 			if err != nil {
 				return err
 			}
 		} else {
-			err := unit.GitPull(ctl.TmpDirPath)
+			err := unit.GitPull(TmpDirPath)
 			if err != nil {
 				return err
 			}
@@ -62,7 +61,7 @@ func ConfigPull(cmd *cobra.Command, args []string) {
 
 		for _, copyMap := range maps {
 			unit.MakeDirWithFilePath(copyMap.Dist)
-			err = unit.Copy(ctl.TmpDirPath+copyMap.Src, copyMap.Dist)
+			err = unit.Copy(TmpDirPath+copyMap.Src, copyMap.Dist)
 			if err != nil {
 				return err
 			}

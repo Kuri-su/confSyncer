@@ -16,117 +16,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ctl
+package confsyncer
 
 import (
 	"fmt"
 	"log"
 	"os"
-	"os/user"
-	"strings"
-	"time"
 
 	"github.com/fatih/color"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/Kuri-su/confSyncer/pkg/confsyncer"
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
-
-var (
-	// Root
-	dirPath              = "$HOME/.confSyncer"
-	cfgFile              = "$HOME/.confSyncer/config.yaml"
-	TmpDirPath           = "/tmp/confSyncer-" + fmt.Sprint(time.Now().Format("20060102"))
-	version              = "0.0.1"
-	DefaultConfigContext = `
----
-gitRepo: git@gitlab.com:xxx/xxx.git
-gitPullTimeInternal: 30 # second
-configs:
-  - src: /a.json
-    dist: /home/kurisu/.config/a/config
-  - src: /b.json
-    dist: /home/kurisu/.config/b/config
-`
-	rootCmd = &cobra.Command{
-		Use:   "confSyncer",
-		Short: "confSyncer",
-		Long:  `confSyncer`,
-	}
-	// ========================================================================
-	// ========================================================================
-	// ========================================================================
-
-	// CMD
-	configCmd = &cobra.Command{
-		Use:   "config",
-		Short: "show config",
-		Run:   ShowConfig,
-	}
-	versionCmd = &cobra.Command{
-		Use:   "version",
-		Short: "show version",
-		Run:   Version,
-	}
-	pushCmd = &cobra.Command{
-		Use:   "push",
-		Short: "push",
-		Run:   confsyncer.ConfigPush,
-	}
-	pullCmd = &cobra.Command{
-		Use:   "pull",
-		Short: "pull",
-		Run:   confsyncer.ConfigPull,
-	}
-	deamonPullCmd = &cobra.Command{
-		Use:   "deamon",
-		Short: "deamon",
-		Long:  `deamon`,
-		Run:   confsyncer.DaemonPull,
-	}
-)
-
-func init() {
-	u, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
-	cfgFile = strings.Replace(cfgFile, "$HOME", u.HomeDir, 1)
-	dirPath = strings.Replace(dirPath, "$HOME", u.HomeDir, 1)
-
-	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", cfgFile, "config file")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
-	// register commands
-	rootCmd.AddCommand(
-		configCmd,
-		versionCmd,
-		pushCmd,
-		pullCmd,
-		deamonPullCmd,
-	)
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-}
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
@@ -197,4 +101,14 @@ func createConfigFile() error {
 	}
 
 	return nil
+}
+
+// ShowConfig
+func ShowConfig(cmd *cobra.Command, args []string) {
+	settingMap := viper.AllSettings()
+	settingStr, err := jsoniter.MarshalIndent(settingMap, "", "    ")
+	if err != nil {
+		fmt.Printf("json marshal failed in ShowConfig! err: %s \n", err.Error())
+	}
+	color.Green("\nThis is your config: \n\n%s \n", settingStr)
 }

@@ -30,8 +30,8 @@ func GitPull(dir string) error {
 	return err
 }
 
-func GitPush(dir string) error {
-	output, err := RunCommandInShellGetOutput(fmt.Sprintf(`cd %s && git commit -m "sync push config" ; git push origin master`, dir))
+func GitCommitAndPush(dir string) error {
+	output, err := RunCommandInShellGetOutput(fmt.Sprintf(`cd %s && git add -A && git commit -a -m "sync push config" && git push origin master`, dir))
 	fmt.Println(output)
 	return err
 }
