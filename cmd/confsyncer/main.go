@@ -20,9 +20,11 @@ package main
 
 import (
 	"log"
+
+	"github.com/Kuri-su/confSyncer/pkg/confsyncer/ctl"
 )
 
 func main() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
-	Execute()
+	ctl.Execute()
 }

@@ -15,47 +15,46 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package main
+package confsyncer
 
 import (
-	"log"
-	"time"
+	"errors"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/Kuri-su/confSyncer/pkg/confsyncer/ctl"
+	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
-// deamonCmd represents the deamon command
-var deamonCmd = &cobra.Command{
-	Use:   "deamon",
-	Short: "deamon",
-	Long:  `deamon`,
-	Run: func(cmd *cobra.Command, args []string) {
-		ticker := time.NewTicker(time.Duration(viper.GetInt("gitPullTimeInternal")) * time.Second)
-		defer ticker.Stop()
-
-		for {
-			select {
-			case <-ticker.C:
-				err := ConfigPull()
-				if err != nil {
-					log.Fatalln(err.Error())
-				}
+func ConfigPush(cmd *cobra.Command, args []string) {
+	f := func() error {
+		if !unit.IsDir(ctl.TmpDirPath) {
+			return errors.New("not found dir")
+		} else {
+			err := unit.GitPush(ctl.TmpDirPath)
+			if err != nil {
+				color.Red(err.Error())
 			}
 		}
-	},
-}
 
-func init() {
-	rootCmd.AddCommand(deamonCmd)
+		maps := viper.GetStringMapString("maps")
 
-	// Here you will define your flags and configuration settings.
+		for src, dist := range maps {
+			err := unit.Copy(dist, ctl.TmpDirPath+src)
+			if err != nil {
+				return err
+			}
+		}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deamonCmd.PersistentFlags().String("foo", "", "A help for foo")
+		color.Green("Configs push finish!")
+		return nil
+	}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deamonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	err := f()
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
 }

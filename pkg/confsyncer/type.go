@@ -16,27 +16,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package main
+package confsyncer
 
-import (
-	"github.com/fatih/color"
-	"github.com/spf13/cobra"
-)
-
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "show version",
-	Long:  `show version`,
-	Run: func(cmd *cobra.Command, args []string) {
-		Version()
-	},
+type Config struct {
+	GitRepo string `yaml:"gitRepo"`
+	GitPull struct {
+		TimeInternal int `yaml:"timeInternal"`
+	} `yaml:"gitPull"`
+	Configs []Path `yaml:"configs"`
 }
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
-}
-func Version() {
-	color.Set(color.Bold)
-	color.HiWhite("confSyncer version: %s", version)
+type Path struct {
+	Src  string `yaml:"src"`
+	Dist string `yaml:"dist"`
 }

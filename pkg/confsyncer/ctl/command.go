@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package main
+package ctl
 
 import (
 	"fmt"
@@ -31,23 +31,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/Kuri-su/confSyncer/pkg/confsyncer"
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
-type Config struct {
-	GitRepo string `yaml:"gitRepo"`
-	GitPull struct {
-		TimeInternal int `yaml:"timeInternal"`
-	} `yaml:"gitPull"`
-	Configs []Path `yaml:"configs"`
-}
-
-type Path struct {
-	Src  string `yaml:"src"`
-	Dist string `yaml:"dist"`
-}
-
 var (
+	// Root
 	dirPath              = "$HOME/.confSyncer"
 	cfgFile              = "$HOME/.confSyncer/config.yaml"
 	TmpDirPath           = "/tmp/confSyncer-" + fmt.Sprint(time.Now().Format("20060102"))
@@ -62,26 +51,43 @@ configs:
   - src: /b.json
     dist: /home/kurisu/.config/b/config
 `
-)
-
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "confSyncer",
-	Short: "confSyncer",
-	Long:  `confSyncer`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	rootCmd = &cobra.Command{
+		Use:   "confSyncer",
+		Short: "confSyncer",
+		Long:  `confSyncer`,
 	}
-}
+	// ========================================================================
+	// ========================================================================
+	// ========================================================================
+
+	// CMD
+	configCmd = &cobra.Command{
+		Use:   "config",
+		Short: "show config",
+		Run:   ShowConfig,
+	}
+	versionCmd = &cobra.Command{
+		Use:   "version",
+		Short: "show version",
+		Run:   Version,
+	}
+	pushCmd = &cobra.Command{
+		Use:   "push",
+		Short: "push",
+		Run:   confsyncer.ConfigPush,
+	}
+	pullCmd = &cobra.Command{
+		Use:   "pull",
+		Short: "pull",
+		Run:   confsyncer.ConfigPull,
+	}
+	deamonPullCmd = &cobra.Command{
+		Use:   "deamon",
+		Short: "deamon",
+		Long:  `deamon`,
+		Run:   confsyncer.DaemonPull,
+	}
+)
 
 func init() {
 	u, err := user.Current()
@@ -102,6 +108,24 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// register commands
+	rootCmd.AddCommand(
+		configCmd,
+		versionCmd,
+		pushCmd,
+		pullCmd,
+		deamonPullCmd,
+	)
+}
+
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
