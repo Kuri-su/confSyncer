@@ -20,10 +20,10 @@ RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux
     && chmod a+x ./upx \
     && mv ./upx /usr/local/bin/ \
     && cd /root/go/bin \
-    && strip --strip-unneeded confSyncer \
+    && strip --strip-unneeded confsyncer \
     && upx confSyncer \
-    && chmod a+x ./confSyncer \
-    && cp confSyncer /usr/local/bin
+    && chmod a+x ./confsyncer \
+    && cp confsyncer /usr/local/bin
 
 # step 1
 FROM alpine:latest
