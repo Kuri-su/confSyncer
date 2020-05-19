@@ -21,7 +21,7 @@ RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux
     && mv ./upx /usr/local/bin/ \
     && cd /root/go/bin \
     && strip --strip-unneeded confsyncer \
-    && upx confSyncer \
+    && upx confsyncer \
     && chmod a+x ./confsyncer \
     && cp confsyncer /usr/local/bin
 
