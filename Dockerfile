@@ -28,6 +28,6 @@ RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux
 # step 1
 FROM alpine:latest
 
-COPY --from=0 /usr/local/bin/confSyncer /usr/local/bin/
+COPY --from=0 /usr/local/bin/confsyncer /usr/local/bin/
 
 CMD ["confsyncer","deamon"]
