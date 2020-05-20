@@ -94,7 +94,7 @@ func init() {
 	cfgFile = strings.Replace(cfgFile, "$HOME", u.HomeDir, 1)
 	dirPath = strings.Replace(dirPath, "$HOME", u.HomeDir, 1)
 
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(InitConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,

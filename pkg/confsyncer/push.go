@@ -22,9 +22,7 @@ import (
 	"log"
 
 	"github.com/fatih/color"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
@@ -38,15 +36,7 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 
 		// TODO package this code section
 		// get config
-		var maps []Path
-		marshal, err := jsoniter.MarshalToString(viper.Get("maps"))
-		if err != nil {
-			return err
-		}
-		err = jsoniter.UnmarshalFromString(marshal, &maps)
-		if err != nil {
-			return err
-		}
+		maps, err := GetFilesMaps()
 
 		for _, pathStruct := range maps {
 			copySrc := pathStruct.Dist

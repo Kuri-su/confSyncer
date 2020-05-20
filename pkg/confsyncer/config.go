@@ -32,8 +32,8 @@ import (
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
+// InitConfig reads in config file and ENV variables if set.
+func InitConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -104,11 +104,26 @@ func createConfigFile() error {
 }
 
 // ShowConfig
-func ShowConfig(cmd *cobra.Command, args []string) {
+func ShowConfig(*cobra.Command, []string) {
 	settingMap := viper.AllSettings()
 	settingStr, err := jsoniter.MarshalIndent(settingMap, "", "    ")
 	if err != nil {
 		fmt.Printf("json marshal failed in ShowConfig! err: %s \n", err.Error())
 	}
 	color.Green("\nThis is your config: \n\n%s \n", settingStr)
+}
+
+func GetFilesMaps() ([]Path, error) {
+	var maps []Path
+
+	marshal, err := jsoniter.MarshalToString(viper.Get("maps"))
+	if err != nil {
+		return nil, err
+	}
+	err = jsoniter.UnmarshalFromString(marshal, &maps)
+	if err != nil {
+		return nil, err
+	}
+
+	return maps, nil
 }

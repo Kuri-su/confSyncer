@@ -15,6 +15,66 @@ limitations under the License.
 */
 package main
 
-func main() {
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
 
+	"gopkg.in/yaml.v2"
+
+	"github.com/Kuri-su/confSyncer/pkg/confsyncer"
+)
+
+type DockerCompose struct {
+	Version  string               `yaml:"version"`
+	Services map[string]Container `yaml:"service"`
+}
+
+type Container struct {
+	Image   string   `yaml:"image"`
+	Restart string   `yaml:"restart"`
+	Volumes []string `yaml:"volumes"`
+}
+
+const (
+	ContainerName                 = "confsyncer"
+	GenerateDockerComposeFileName = "docker-compose.yaml"
+)
+
+func main() {
+	confsyncer.InitConfig()
+
+	dc := new(DockerCompose)
+	initDockerComposeStruct(dc)
+
+	maps, err := confsyncer.GetFilesMaps()
+	if err != nil {
+		panic(err)
+	}
+
+	var volumes []string
+	for _, m := range maps {
+		volumes = append(volumes, fmt.Sprintf("%s:%s", m.Dist, m.Dist))
+	}
+
+	dc.Services[ContainerName] = Container{
+		Image:   "kurisux/conf-syncer:latest",
+		Restart: "always",
+		Volumes: volumes,
+	}
+
+	marshal, err := yaml.Marshal(dc)
+	if err != nil {
+		panic(err)
+	}
+
+	err = ioutil.WriteFile(GenerateDockerComposeFileName, marshal, os.FileMode(0744))
+	if err != nil {
+		panic(err)
+	}
+}
+
+func initDockerComposeStruct(dc *DockerCompose) {
+	dc.Version = "3"
+	dc.Services = make(map[string]Container)
 }
