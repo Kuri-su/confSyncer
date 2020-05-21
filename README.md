@@ -1,10 +1,10 @@
-# [WIP]confSyncer
+# confsyncer
 
-A little sync files tool in the Linux.
+A little sync files tool in the **Linux**.
 
 ## What's this
 
-confSyncer is a little tool about push and pull files in git repo,  基于此 你可以 很方便的将一些配置文件在 多台机器中进行同步.
+`confsyncer` is a little tool about push and pull files in git repo,  基于此 你可以 很方便的将一些配置文件在 多台机器中进行同步.
 
 ## Features
 
@@ -13,21 +13,31 @@ confSyncer is a little tool about push and pull files in git repo,  基于此 �
 
 ## Install
 ```shell
-$ go get github.com/Kuri-su/confSyncer
+$ wget xxxxxx
 ```
 
-### In Docker
+#### or
 ```shell
-$ docker run -d kurisux/conf-syncer
+# use docker-compose with "gen"
+$ wget xxxxxx
+$ cp xxxxx
+$ gen xxxx
 ```
 
 ## How to Use
 
-// TODO
+### In Host
+
+// crontab 定期 confsyncer pull 即可
+
+### In Container 
+
+// confsyncerGen + dockerCompose  即可
+
+
 
 ## docker-compose.yaml Gen
 
-// TODO code dev
 // TODO docs
 
 ## LICENSE
