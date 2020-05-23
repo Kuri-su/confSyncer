@@ -36,15 +36,15 @@ var (
 	// TmpDir(TmpDirPath) is a tmp git clone dir
 	TmpDirPath = "/tmp/confsyncer-" + fmt.Sprint(time.Now().Format("20060102"))
 	// version
-	version = "0.0.1"
+	version = "0.0.2"
 	// use it when need a default config
 	DefaultConfigContext = `
 ---
 gitRepo: git@gitlab.com:examples/examples.git
 gitPullTimeInternal: 30 # second
 maps:
-  - src: SourceFilePathOfGitRepo
-    dist: FilePathOfLocal
+  - src: // TODO SourceFilePathOfGitRepo
+    dist: // TODO FilePathOfLocal
 `
 
 	// ========================================================================
