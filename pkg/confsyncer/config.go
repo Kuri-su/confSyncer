@@ -32,6 +32,10 @@ import (
 	"github.com/Kuri-su/confSyncer/pkg/unit"
 )
 
+const (
+	configName = ".confsyncer"
+)
+
 // InitConfig reads in config file and ENV variables if set.
 func InitConfig() {
 	if cfgFile != "" {
@@ -47,7 +51,7 @@ func InitConfig() {
 
 		// Search config in home directory with name ".confSyncer" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".confSyncer")
+		viper.SetConfigName(configName)
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -82,7 +86,7 @@ func createConfigFile() error {
 	if !unit.IsFile(cfgFile) {
 
 		// make dir
-		err := os.MkdirAll(dirPath, 0644)
+		err := unit.MakeDirWithFilePath(cfgFile)
 		if err != nil {
 			log.Fatalln(err)
 		}

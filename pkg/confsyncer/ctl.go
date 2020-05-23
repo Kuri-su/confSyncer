@@ -31,22 +31,20 @@ import (
 
 var (
 	// Root
-	dirPath = "$HOME/.confSyncer"
-	cfgFile = "$HOME/.confSyncer/config.yaml"
+	dirPath = "$HOME/.confsyncer"
+	cfgFile = "$HOME/.confsyncer/config.yaml"
 	// TmpDir(TmpDirPath) is a tmp git clone dir
-	TmpDirPath = "/tmp/confSyncer-" + fmt.Sprint(time.Now().Format("20060102"))
+	TmpDirPath = "/tmp/confsyncer-" + fmt.Sprint(time.Now().Format("20060102"))
 	// version
 	version = "0.0.1"
 	// use it when need a default config
 	DefaultConfigContext = `
 ---
-gitRepo: git@gitlab.com:xxx/xxx.git
+gitRepo: git@gitlab.com:examples/examples.git
 gitPullTimeInternal: 30 # second
-configs:
-  - src: /a.json
-    dist: /home/kurisu/.config/a/config
-  - src: /b.json
-    dist: /home/kurisu/.config/b/config
+maps:
+  - src: SourceFilePathOfGitRepo
+    dist: FilePathOfLocal
 `
 
 	// ========================================================================
