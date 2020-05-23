@@ -19,5 +19,5 @@ jobs:
         run: |
           ls -al
           pwd
-          make cs
+          make buildall
 
