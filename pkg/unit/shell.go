@@ -21,6 +21,7 @@ package unit
 import (
 	"bytes"
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"io"
 	"io/ioutil"
 	"log"
@@ -108,13 +109,41 @@ func IsFile(path string) bool {
 	return true
 }
 
+func RealPath(path string) (string, error) {
+	// clean '~' char
+	realPath, err := homedir.Expand(path)
+	if err != nil {
+		return "", err
+	}
+
+	return realPath, nil
+}
+
 func Copy(src, dist string) error {
+	var err error
+	src, err = RealPath(src)
+	if err != nil {
+		return err
+	}
+	dist, err = RealPath(dist)
+	if err != nil {
+		return err
+	}
+	fmt.Println(src)
+	fmt.Println(dist)
+
 	// open source file
 	originalFile, err := os.Open(src)
 	if err != nil {
 		return err
 	}
 	defer originalFile.Close()
+
+	err = MakeDirWithFilePath(dist)
+	if err != nil {
+		return err
+	}
+
 	// create new file
 	newFile, err := os.Create(dist)
 	if err != nil {

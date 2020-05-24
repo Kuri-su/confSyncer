@@ -19,6 +19,7 @@
 package confsyncer
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -36,8 +37,12 @@ const (
 	configName = ".confsyncer"
 )
 
-// InitConfig reads in config file and ENV variables if set.
-func InitConfig() {
+var (
+	ConfigExists = true
+)
+
+// LoadConfig reads in config file and ENV variables if set.
+func LoadConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -59,31 +64,38 @@ func InitConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
+		ConfigExists = true
 		color.Green("Using config file: %s", viper.ConfigFileUsed())
 	} else {
-		color.Yellow("Warning: Not found config, now reinit it! ")
-		err := createConfigFile()
-		if err != nil {
-			log.Fatal(color.RedString(err.Error()))
-		}
+		ConfigExists = false
+		return
 	}
 
 	// found config file failed
-	err := configCheck()
-	if err != nil {
-		log.Fatal(color.RedString(err.Error()))
-	}
+	configCheck(true)
 }
 
-func configCheck() error {
-	if viper.Get("maps") == nil || len(viper.Get("maps").([]interface{})) == 0 {
-		color.Red("Warning! 'maps' fields is empty in configFile")
+func initConfig(force bool) error {
+	err := createConfigFile(force)
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-func createConfigFile() error {
-	if !unit.IsFile(cfgFile) {
+func configCheck(output bool) error {
+	if viper.Get("maps") == nil || len(viper.Get("maps").([]interface{})) == 0 {
+		msg := "Warning: 'maps' fields is empty in configFile "
+		if output {
+			color.Red(msg)
+		}
+		return errors.New(msg)
+	}
+	return nil
+}
+
+func createConfigFile(force bool) error {
+	if !unit.IsFile(cfgFile) || force {
 
 		// make dir
 		err := unit.MakeDirWithFilePath(cfgFile)
@@ -114,7 +126,7 @@ func ShowConfig(*cobra.Command, []string) {
 	if err != nil {
 		fmt.Printf("json marshal failed in ShowConfig! err: %s \n", err.Error())
 	}
-	color.Green("\nThis is your config: \n\n%s \n", settingStr)
+	color.Green("\nThis is your config: \n%s \n", settingStr)
 }
 
 func GetFilesMaps() ([]Path, error) {

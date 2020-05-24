@@ -28,13 +28,95 @@ $ gen xxxx
 
 ### In Host
 
-// crontab 定期 confsyncer pull 即可
+1. init confsyncer's config
+
+    ```shell
+    # init confsyncer's config
+    $ confsyncer init
+    init confsyncer's configfile in ~/.confsyncer/config.yaml
+    
+    This is your config: 
+    {
+        "gitpulltimeinternal": 30,
+        "maps": [
+            {
+                "src": "// TODO SourceFilePathOfGitRepo",
+                "dist": "// TODO FilePathOfLocal"
+            }
+        ],
+        "gitrepo": "git@gitlab.com:examples/examples.git"
+    }
+    
+    you should modify it before use.
+    ```
+
+2. modify confsyncer 
+
+3. create the git repo and push your config files to repo
+
+   ```shell
+   # show confsyncer's config
+   $ confsyncer config
+   xxxxxx
+   
+   # commit && push files to git repo
+   $ confsyncer push
+   /tmp/a->/tmp/b job success
+   /tmp/c->/tmp/d job success
+   /tmp/e->/tmp/f job failed
+   ```
+
+4. modify crontab file to pull config every 1m
+
+    ```shell
+    # 
+    * * * * * bash -c "confsyncer pull"
+    ```
+
+5. 或者你也可以手动的拉取
+
+    ```shell
+    # pull config files
+    $ confsyncer pull
+    /tmp/a->/tmp/b job success
+    /tmp/c->/tmp/d job success
+    /tmp/e->/tmp/f job failed
+    ```
 
 ### In Container 
 
-// confsyncerGen + dockerCompose  即可
+1. init confsyncer's config 
 
+   ```shell
+   # init confsyncer's config
+   $ confsyncer init
+   init confsyncer's configfile in ~/.confsyncer/config.yaml
+   
+   This is your config: 
+   {
+       "gitpulltimeinternal": 30,
+       "maps": [
+           {
+               "src": "// TODO SourceFilePathOfGitRepo",
+               "dist": "// TODO FilePathOfLocal"
+           }
+       ],
+       "gitrepo": "git@gitlab.com:examples/examples.git"
+   }
+   you should modify it before use.
+   ```
 
+2. modify confsyncer 
+
+3. run confsyncer-gen with you confsyncer config
+
+   ```shell
+   # 
+   $ confsyncer-gen -f ~/.confsyncer/config.yaml -o ./
+# 然后使用 docker-compose 启动服务即可 , 重新生成后也是一样的操作和结果
+   $ docker-compose up -d
+   ```
+   
 
 ## docker-compose.yaml Gen
 

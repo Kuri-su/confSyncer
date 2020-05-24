@@ -18,9 +18,7 @@
 package confsyncer
 
 import (
-	"errors"
-	"log"
-
+	"fmt"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
@@ -31,7 +29,10 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 	f := func() error {
 		// check
 		if !unit.IsDir(TmpDirPath) {
-			return errors.New("not found dir")
+			err := initTmpDir()
+			if err != nil {
+				return err
+			}
 		}
 
 		// TODO package this code section
@@ -41,10 +42,11 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 		for _, pathStruct := range maps {
 			copySrc := pathStruct.Dist
 			copyDist := TmpDirPath + pathStruct.Src
-			log.Println(copySrc, copyDist)
 			err := unit.Copy(copySrc, copyDist)
 			if err != nil {
-				return err
+				color.Red(fmt.Sprintf("copy '%s' to '%s' failed! \nErr: %s", copySrc, copyDist, err.Error()))
+			} else {
+				color.Green(fmt.Sprintf("copy '%s' to '%s' success", copySrc, copyDist))
 			}
 		}
 

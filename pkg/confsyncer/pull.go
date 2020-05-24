@@ -32,7 +32,7 @@ import (
 func ConfigPull(cmd *cobra.Command, args []string) {
 	f := func(cmd *cobra.Command, args []string) error {
 		if !unit.IsDir(TmpDirPath) {
-			err := unit.GitClone(viper.GetString("gitRepo"), TmpDirPath)
+			err := initTmpDir()
 			if err != nil {
 				return err
 			}
@@ -61,9 +61,13 @@ func ConfigPull(cmd *cobra.Command, args []string) {
 
 		for _, copyMap := range maps {
 			unit.MakeDirWithFilePath(copyMap.Dist)
+			copySrc := TmpDirPath + copyMap.Src
+			copyDist := copyMap.Dist
 			err = unit.Copy(TmpDirPath+copyMap.Src, copyMap.Dist)
 			if err != nil {
-				return err
+				color.Red(fmt.Sprintf("copy '%s' to '%s' failed!\nErr: %s", copySrc, copyDist, err.Error()))
+			} else {
+				color.Green(fmt.Sprintf("copy '%s' to '%s' success", copySrc, copyDist))
 			}
 		}
 

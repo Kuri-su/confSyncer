@@ -19,7 +19,10 @@
 package confsyncer
 
 import (
+	"errors"
 	"fmt"
+	"github.com/Kuri-su/confSyncer/pkg/unit"
+	"github.com/spf13/viper"
 	"os"
 	"os/user"
 	"strings"
@@ -40,10 +43,10 @@ var (
 	// use it when need a default config
 	DefaultConfigContext = `---
 gitRepo: git@gitlab.com:examples/examples.git
-gitPullTimeInternal: 30 # second
+gitPullTimeInternal: 600 # second
 maps:
-  - src: // TODO SourceFilePathOfGitRepo
-    dist: // TODO FilePathOfLocal
+  - src: /.confsyncer/config.yaml
+    dist: ~/.confsyncer/config.yaml
 `
 
 	// ========================================================================
@@ -52,40 +55,47 @@ maps:
 
 	// CMD
 	rootCmd = &cobra.Command{
-		Use:   "confSyncer",
-		Short: "confSyncer",
-		Long:  `confSyncer`,
+		Use:   "confsyncer",
+		Short: "confsyncer",
+		Long:  `confsyncer`,
 	}
 	initCmd = &cobra.Command{
 		Use:   "init",
 		Short: "initialization config",
-		Run:   initConfig,
+		RunE:  initConfigCmd,
 	}
 	configCmd = &cobra.Command{
-		Use:   "config",
-		Short: "show config",
-		Run:   ShowConfig,
+		Use:     "config",
+		Short:   "show config",
+		PreRunE: configFileExistsCheckCmd,
+		Run:     ShowConfig,
 	}
 	versionCmd = &cobra.Command{
 		Use:   "version",
 		Short: "show version",
-		Run:   Version,
+		Run:   VersionCmd,
 	}
 	pushCmd = &cobra.Command{
-		Use:   "push",
-		Short: "push",
-		Run:   ConfigPush,
+		Use:     "push",
+		Short:   "push",
+		PreRunE: configFileExistsCheckCmd,
+		Run:     ConfigPush,
 	}
 	pullCmd = &cobra.Command{
-		Use:   "pull",
-		Short: "pull",
-		Run:   ConfigPull,
+		Use:     "pull",
+		Short:   "pull",
+		PreRunE: configFileExistsCheckCmd,
+		Run:     ConfigPull,
 	}
 	deamonPullCmd = &cobra.Command{
-		Use:   "daemon",
-		Short: "daemon",
-		Run:   DaemonPull,
+		Use:     "daemon",
+		Short:   "daemon",
+		PreRunE: configFileExistsCheckCmd,
+		Run:     DaemonPull,
 	}
+
+	// flags
+	initForce bool
 )
 
 func init() {
@@ -96,13 +106,14 @@ func init() {
 	cfgFile = strings.Replace(cfgFile, "$HOME", u.HomeDir, 1)
 	dirPath = strings.Replace(dirPath, "$HOME", u.HomeDir, 1)
 
-	cobra.OnInitialize(InitConfig)
+	cobra.OnInitialize(LoadConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", cfgFile, "config file")
+	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", cfgFile, "config file")
+	initCmd.Flags().BoolVarP(&initForce, "force", "f", initForce, "force init")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -128,12 +139,38 @@ func Execute() {
 	}
 }
 
-func initConfig(cmd *cobra.Command, args []string) {
-	InitConfig()
+// initConfigCmd
+func initConfigCmd(cmd *cobra.Command, args []string) error {
+	err := initConfig(initForce)
+	if err != nil {
+		return err
+	}
+	LoadConfig()
+	ShowConfig(cmd, args)
+	return nil
 }
 
-// Version
-func Version(cmd *cobra.Command, args []string) {
+// configFileExistsCheckCmd
+func configFileExistsCheckCmd(cmd *cobra.Command, args []string) error {
+	if !ConfigExists {
+		msg := color.RedString(fmt.Sprintf(`config file not found in "%s", please run "confsyncer init" first! `, cfgFile))
+		return errors.New(msg)
+	}
+	return nil
+}
+
+// VersionCmd
+func VersionCmd(cmd *cobra.Command, args []string) {
 	color.Set(color.Bold)
 	color.HiWhite("confSyncer version: %s", version)
+}
+
+func initTmpDir() error {
+	err := unit.GitClone(viper.GetString("gitRepo"), TmpDirPath)
+	if err != nil {
+		return err
+	}
+	color.Yellow("initTmpDir")
+	return nil
+
 }
