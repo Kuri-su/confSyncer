@@ -119,15 +119,22 @@ func init() {
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	// register commands
-	rootCmd.AddCommand(
+	commands := []*cobra.Command{
 		initCmd,
 		configCmd,
 		versionCmd,
 		pushCmd,
 		pullCmd,
 		deamonPullCmd,
-	)
+	}
+
+	// register commands
+	rootCmd.AddCommand(commands...)
+
+	// add postRun in all command
+	for _, command := range commands {
+		command.PostRun = removeTmpDirCmd
+	}
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -170,7 +177,9 @@ func initTmpDir() error {
 	if err != nil {
 		return err
 	}
-	color.Yellow("initTmpDir")
 	return nil
+}
 
+func removeTmpDirCmd(cmd *cobra.Command, args []string) {
+	unit.RemoveFiles(TmpDirPath)
 }

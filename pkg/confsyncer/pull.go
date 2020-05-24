@@ -38,7 +38,7 @@ func ConfigPull(cmd *cobra.Command, args []string) {
 			}
 		} else {
 			err := unit.GitPull(TmpDirPath)
-			if err != nil {
+			if err != nil && err.Error() != "exit status 1" {
 				return err
 			}
 		}

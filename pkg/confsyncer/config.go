@@ -65,7 +65,7 @@ func LoadConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		ConfigExists = true
-		color.Green("Using config file: %s", viper.ConfigFileUsed())
+		color.White("Using config file: %s", viper.ConfigFileUsed())
 	} else {
 		ConfigExists = false
 		return

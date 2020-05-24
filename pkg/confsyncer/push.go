@@ -51,8 +51,8 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 		}
 
 		err = unit.GitCommitAndPush(TmpDirPath)
-		if err != nil {
-			color.Red(err.Error())
+		if err != nil && err.Error() != "exit status 1" {
+			return err
 		}
 
 		color.Green("Configs push finish!")

@@ -129,8 +129,6 @@ func Copy(src, dist string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(src)
-	fmt.Println(dist)
 
 	// open source file
 	originalFile, err := os.Open(src)
@@ -165,4 +163,12 @@ func Copy(src, dist string) error {
 
 func Move(src, dist string) error {
 	return os.Rename(src, dist)
+}
+
+func RemoveFiles(path string) error {
+	err := os.RemoveAll(path)
+	if err != nil {
+		return err
+	}
+	return nil
 }

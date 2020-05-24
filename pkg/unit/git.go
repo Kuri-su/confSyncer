@@ -26,18 +26,24 @@ import (
 
 func GitPull(dir string) error {
 	output, err := RunCommandInShellGetOutput("cd " + dir + " && git pull origin master")
-	color.HiBlue(output)
+	if err != nil {
+		color.White(output)
+	}
 	return err
 }
 
 func GitCommitAndPush(dir string) error {
 	output, err := RunCommandInShellGetOutput(fmt.Sprintf(`cd %s && git add -A && git commit -a -m "sync push config" && git push origin master`, dir))
-	fmt.Println(output)
+	if err != nil {
+		color.White(output)
+	}
 	return err
 }
 
 func GitClone(gitRepoPath string, dir string) error {
 	output, err := RunCommandInShellGetOutput("git clone " + gitRepoPath + " " + dir)
-	fmt.Println(output)
+	if err != nil {
+		color.White(output)
+	}
 	return err
 }
