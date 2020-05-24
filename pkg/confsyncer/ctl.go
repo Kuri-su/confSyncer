@@ -36,10 +36,9 @@ var (
 	// TmpDir(TmpDirPath) is a tmp git clone dir
 	TmpDirPath = "/tmp/confsyncer-" + fmt.Sprint(time.Now().Format("20060102"))
 	// version
-	version = "0.0.2"
+	version = "0.0.3"
 	// use it when need a default config
-	DefaultConfigContext = `
----
+	DefaultConfigContext = `---
 gitRepo: git@gitlab.com:examples/examples.git
 gitPullTimeInternal: 30 # second
 maps:
@@ -56,6 +55,11 @@ maps:
 		Use:   "confSyncer",
 		Short: "confSyncer",
 		Long:  `confSyncer`,
+	}
+	initCmd = &cobra.Command{
+		Use:   "init",
+		Short: "initialization config",
+		Run:   initConfig,
 	}
 	configCmd = &cobra.Command{
 		Use:   "config",
@@ -78,8 +82,8 @@ maps:
 		Run:   ConfigPull,
 	}
 	deamonPullCmd = &cobra.Command{
-		Use:   "deamon",
-		Short: "deamon",
+		Use:   "daemon",
+		Short: "daemon",
 		Run:   DaemonPull,
 	}
 )
@@ -106,6 +110,7 @@ func init() {
 
 	// register commands
 	rootCmd.AddCommand(
+		initCmd,
 		configCmd,
 		versionCmd,
 		pushCmd,
@@ -121,6 +126,10 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func initConfig(cmd *cobra.Command, args []string) {
+	InitConfig()
 }
 
 // Version
