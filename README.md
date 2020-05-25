@@ -113,7 +113,7 @@ $ gen xxxx
    ```shell
    # 
    $ confsyncer-gen -f ~/.confsyncer/config.yaml -o ./
-# 然后使用 docker-compose 启动服务即可 , 重新生成后也是一样的操作和结果
+   # 然后使用 docker-compose 启动服务即可 , 重新生成后也是一样的操作和结果
    $ docker-compose up -d
    ```
    
