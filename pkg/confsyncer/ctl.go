@@ -21,12 +21,14 @@ package confsyncer
 import (
 	"errors"
 	"fmt"
-	"github.com/Kuri-su/confSyncer/pkg/unit"
-	"github.com/spf13/viper"
 	"os"
 	"os/user"
 	"strings"
 	"time"
+
+	"github.com/spf13/viper"
+
+	"github.com/Kuri-su/confSyncer/pkg/unit"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -45,8 +47,8 @@ var (
 gitRepo: git@gitlab.com:examples/examples.git
 gitPullTimeInternal: 600 # second
 maps:
-  - src: /.confsyncer/config.yaml
-    dist: ~/.confsyncer/config.yaml
+  - gitRepoPath: /.confsyncer/config.yaml
+    local: ~/.confsyncer/config.yaml
 `
 
 	// ========================================================================

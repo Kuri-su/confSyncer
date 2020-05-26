@@ -21,7 +21,6 @@ package unit
 import (
 	"bytes"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
 	"io"
 	"io/ioutil"
 	"log"
@@ -29,6 +28,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/mitchellh/go-homedir"
 )
 
 func RunCommandInShell(command string) {
@@ -121,6 +122,7 @@ func RealPath(path string) (string, error) {
 
 func Copy(src, dist string) error {
 	var err error
+	// get realPath
 	src, err = RealPath(src)
 	if err != nil {
 		return err
@@ -130,6 +132,7 @@ func Copy(src, dist string) error {
 		return err
 	}
 
+	// TODO copy dir
 	// open source file
 	originalFile, err := os.Open(src)
 	if err != nil {

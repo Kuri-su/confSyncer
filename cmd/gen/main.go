@@ -54,7 +54,7 @@ func main() {
 
 	var volumes []string
 	for _, m := range maps {
-		volumes = append(volumes, fmt.Sprintf("%s:%s", m.Dist, m.Dist))
+		volumes = append(volumes, fmt.Sprintf("%s:%s", m.Local, m.Local))
 	}
 
 	dc.Services[ContainerName] = Container{
