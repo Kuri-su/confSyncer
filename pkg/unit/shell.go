@@ -28,10 +28,12 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"github.com/mitchellh/go-homedir"
 )
 
+// RunCommandInShell call bash shell && return stdout and stderr
 func RunCommandInShell(command string) {
 	commandWords := strings.Split(command, " ")
 	cmd := exec.Command(commandWords[0], commandWords[1:]...)
@@ -68,6 +70,7 @@ func RunCommandInShell(command string) {
 	fmt.Printf("\nout:\n%s\nerr:\n%s\n", outStr, errStr)
 }
 
+// RunCommandInShellGetOutput return output in once time
 func RunCommandInShellGetOutput(command string) (string, error) {
 	cmd := exec.Command("sh", "-c", command)
 	out, err := cmd.CombinedOutput()
@@ -81,8 +84,9 @@ func MakeDirWithFilePath(path string) error {
 	return os.MkdirAll(filepath.Dir(path), 0744)
 }
 
-func CreateFile(dir string) error {
-	newFile, err := os.Create(dir)
+// CreateFile will create file
+func CreateFile(filename string) error {
+	newFile, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
@@ -90,8 +94,9 @@ func CreateFile(dir string) error {
 	return nil
 }
 
-func WriteFile(dir string, context []byte) error {
-	return ioutil.WriteFile(dir, context, 0744)
+// WriteFile is write content into file
+func WriteFile(dir string, content []byte) error {
+	return ioutil.WriteFile(dir, content, 0744)
 }
 
 func IsDir(path string) bool {
@@ -120,7 +125,22 @@ func RealPath(path string) (string, error) {
 	return realPath, nil
 }
 
+// Copy can copy file or directory to dist path
 func Copy(src, dist string) error {
+	stat, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	if stat.IsDir() {
+		return CopyDirectory(src, dist)
+	}
+
+	return CopyFile(src, dist)
+}
+
+// CopyFile can copy file to dist path
+func CopyFile(src, dist string) error {
 	var err error
 	// get realPath
 	src, err = RealPath(src)
@@ -164,10 +184,95 @@ func Copy(src, dist string) error {
 	return nil
 }
 
+// CopyDirectory can copy directory to dist path
+func CopyDirectory(srcDir, dist string) error {
+	entries, err := ioutil.ReadDir(srcDir)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		sourcePath := filepath.Join(srcDir, entry.Name())
+		destPath := filepath.Join(dist, entry.Name())
+
+		fileInfo, err := os.Stat(sourcePath)
+		if err != nil {
+			return err
+		}
+
+		stat, ok := fileInfo.Sys().(*syscall.Stat_t)
+		if !ok {
+			return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath)
+		}
+
+		switch fileInfo.Mode() & os.ModeType {
+		case os.ModeDir:
+			if err := CreateIfNotExists(destPath, 0755); err != nil {
+				return err
+			}
+			if err := CopyDirectory(sourcePath, destPath); err != nil {
+				return err
+			}
+		case os.ModeSymlink:
+			if err := CopySymLink(sourcePath, destPath); err != nil {
+				return err
+			}
+		default:
+			if err := CopyFile(sourcePath, destPath); err != nil {
+				return err
+			}
+		}
+
+		if err := os.Lchown(destPath, int(stat.Uid), int(stat.Gid)); err != nil {
+			return err
+		}
+
+		isSymlink := entry.Mode()&os.ModeSymlink != 0
+		if !isSymlink {
+			if err := os.Chmod(destPath, entry.Mode()); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Exists to check filePath is exists
+func Exists(filePath string) bool {
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return false
+	}
+
+	return true
+}
+
+// CreateIfNotExists create dir if folder is exists
+func CreateIfNotExists(dir string, perm os.FileMode) error {
+	if Exists(dir) {
+		return nil
+	}
+
+	if err := os.MkdirAll(dir, perm); err != nil {
+		return fmt.Errorf("failed to create directory: '%s', error: '%s'", dir, err.Error())
+	}
+
+	return nil
+}
+
+// CopySymLink is copy symlink to dist
+func CopySymLink(src, dist string) error {
+	link, err := os.Readlink(src)
+	if err != nil {
+		return err
+	}
+	return os.Symlink(link, dist)
+}
+
+// Move is move src to dist
 func Move(src, dist string) error {
 	return os.Rename(src, dist)
 }
 
+// RemoveFiles is remove files
 func RemoveFiles(path string) error {
 	err := os.RemoveAll(path)
 	if err != nil {

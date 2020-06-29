@@ -42,7 +42,7 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 		for _, pathStruct := range maps {
 			copySrc := pathStruct.Local
 			copyDist := TmpDirPath + pathStruct.GitRepoPath
-			err := unit.Copy(copySrc, copyDist)
+			err := unit.CopyFile(copySrc, copyDist)
 			if err != nil {
 				color.Red(fmt.Sprintf("copy '%s' to '%s' failed! \nErr: %s", copySrc, copyDist, err.Error()))
 			} else {
