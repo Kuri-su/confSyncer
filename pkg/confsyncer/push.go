@@ -19,6 +19,7 @@ package confsyncer
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
@@ -26,7 +27,7 @@ import (
 )
 
 func ConfigPush(cmd *cobra.Command, args []string) {
-	f := func() error {
+	f := func(cmd *cobra.Command, args []string) error {
 		// check
 		if !unit.IsDir(TmpDirPath) {
 			err := initTmpDir()
@@ -42,7 +43,7 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 		for _, pathStruct := range maps {
 			copySrc := pathStruct.Local
 			copyDist := TmpDirPath + pathStruct.GitRepoPath
-			err := unit.CopyFile(copySrc, copyDist)
+			err := unit.Copy(copySrc, copyDist)
 			if err != nil {
 				color.Red(fmt.Sprintf("copy '%s' to '%s' failed! \nErr: %s", copySrc, copyDist, err.Error()))
 			} else {
@@ -59,7 +60,7 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 		return nil
 	}
 
-	err := f()
+	err := f(cmd, args)
 	if err != nil {
 		color.Red(err.Error())
 		return

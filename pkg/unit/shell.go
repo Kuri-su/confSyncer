@@ -72,8 +72,7 @@ func RunCommandInShell(command string) {
 
 // RunCommandInShellGetOutput return output in once time
 func RunCommandInShellGetOutput(command string) (string, error) {
-	cmd := exec.Command("sh", "-c", command)
-	out, err := cmd.CombinedOutput()
+	out, err := exec.Command("sh", "-c", command).CombinedOutput()
 	if err != nil {
 		return string(out), err
 	}
@@ -127,20 +126,6 @@ func RealPath(path string) (string, error) {
 
 // Copy can copy file or directory to dist path
 func Copy(src, dist string) error {
-	stat, err := os.Stat(src)
-	if err != nil {
-		return err
-	}
-
-	if stat.IsDir() {
-		return CopyDirectory(src, dist)
-	}
-
-	return CopyFile(src, dist)
-}
-
-// CopyFile can copy file to dist path
-func CopyFile(src, dist string) error {
 	var err error
 	// get realPath
 	src, err = RealPath(src)
@@ -151,6 +136,22 @@ func CopyFile(src, dist string) error {
 	if err != nil {
 		return err
 	}
+
+	stat, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	if stat.IsDir() {
+		return CopyDirectory(src, dist)
+	} else {
+		return CopyFile(src, dist)
+	}
+}
+
+// CopyFile can copy file to dist path
+func CopyFile(src, dist string) error {
+	var err error
 
 	// TODO copy dir
 	// open source file

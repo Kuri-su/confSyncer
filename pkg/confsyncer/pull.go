@@ -36,11 +36,11 @@ func ConfigPull(cmd *cobra.Command, args []string) {
 			if err != nil {
 				return err
 			}
-		} else {
-			err := unit.GitPull(TmpDirPath)
-			if err != nil && err.Error() != "exit status 1" {
-				return err
-			}
+		}
+
+		err := unit.GitPull(TmpDirPath)
+		if err != nil && err.Error() != "exit status 1" {
+			return err
 		}
 
 		c := viper.Get("maps")
@@ -63,7 +63,7 @@ func ConfigPull(cmd *cobra.Command, args []string) {
 			unit.MakeDirWithFilePath(copyMap.Local)
 			copySrc := TmpDirPath + copyMap.GitRepoPath
 			copyDist := copyMap.Local
-			err = unit.CopyFile(TmpDirPath+copyMap.GitRepoPath, copyMap.Local)
+			err = unit.Copy(TmpDirPath+copyMap.GitRepoPath, copyMap.Local)
 			if err != nil {
 				color.Red(fmt.Sprintf("copy '%s' to '%s' failed!\nErr: %s", copySrc, copyDist, err.Error()))
 			} else {
