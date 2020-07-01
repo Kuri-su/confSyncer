@@ -36,11 +36,11 @@ func ConfigPull(cmd *cobra.Command, args []string) {
 			if err != nil {
 				return err
 			}
-		} else {
-			err := unit.GitPull(TmpDirPath)
-			if err != nil && err.Error() != "exit status 1" {
-				return err
-			}
+		}
+
+		err := unit.GitPull(TmpDirPath)
+		if err != nil && err.Error() != "exit status 1" {
+			return err
 		}
 
 		c := viper.Get("maps")
