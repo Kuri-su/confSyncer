@@ -20,6 +20,7 @@ package unit
 
 import "os"
 
+// enableDebugLogSwitch is debug log switch
 var enableDebugLogSwitch bool
 
 const (
