@@ -1,8 +1,6 @@
 # confsyncer
 
-```
 [![](https://img.shields.io/badge/language-中文-333333.svg?longCache=true&style=flat-square&colorA=E62B1E)](README-cn.md)
-```
 
 A little sync files tool in the **Linux**.
 
