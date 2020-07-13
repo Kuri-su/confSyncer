@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 
 	"github.com/Kuri-su/confSyncer/pkg/confsyncer"
@@ -41,9 +42,43 @@ const (
 	GenerateDockerComposeFileName = "docker-compose.yaml"
 )
 
-func main() {
-	confsyncer.LoadConfig()
+var rootCmd *cobra.Command
 
+func init() {
+	initCobra()
+}
+
+func main() {
+	initCobra()
+
+	// run
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func initCobra() {
+	rootCmd = &cobra.Command{
+		Use:   "confsyncerGen",
+		Short: `build docker-compose.yaml from confsyncer conf`,
+		Run:   run,
+	}
+	commands := []*cobra.Command{
+		&cobra.Command{
+			Use:   "config",
+			Short: "show config",
+		},
+		&cobra.Command{
+			Use:   "composeyaml",
+			Short: "show composeyaml",
+		},
+	}
+
+	rootCmd.AddCommand(commands...)
+}
+
+func run(cmd *cobra.Command, args []string) {
 	dc := new(DockerCompose)
 	initDockerComposeStruct(dc)
 

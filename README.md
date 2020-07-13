@@ -136,7 +136,7 @@ $ sudo cp confsyncer-0.0.1-amd64     /usr/local/bin/confsyncer
 
    ```shell
    # run (然后使用 docker-compose 启动服务即可)
-   $ confsyncerGen build && docker-compose up -f ~/.confsyncer/docker-compose.yaml -d 
+   $ confsyncerGen && docker-compose up -f ~/.confsyncer/docker-compose.yaml -d 
    ```
 
 ## 参数介绍
@@ -170,7 +170,6 @@ Available Commands:
   config      show config
   composeyaml show composeyaml
   help        Help about any command
-  build       build docker-compose.yaml
   version     show version
 
 Flags:
