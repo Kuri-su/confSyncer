@@ -132,7 +132,8 @@ func ShowConfig(*cobra.Command, []string) {
 	color.Green("\nThis is your config: \n%s \n", settingStr)
 }
 
-func GetFilesMaps() ([]Path, error) {
+// get files map
+func GetFilesMap() ([]Path, error) {
 	var maps []Path
 
 	marshal, err := jsoniter.MarshalToString(viper.Get("maps"))

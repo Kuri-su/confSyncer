@@ -38,7 +38,7 @@ func ConfigPush(cmd *cobra.Command, args []string) {
 
 		// TODO package this code section
 		// get config
-		maps, err := GetFilesMaps()
+		maps, err := GetFilesMap()
 
 		for _, pathStruct := range maps {
 			copySrc := pathStruct.Local

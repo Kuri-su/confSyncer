@@ -47,7 +47,7 @@ func main() {
 	dc := new(DockerCompose)
 	initDockerComposeStruct(dc)
 
-	maps, err := confsyncer.GetFilesMaps()
+	maps, err := confsyncer.GetFilesMap()
 	if err != nil {
 		panic(err)
 	}

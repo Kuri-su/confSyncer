@@ -87,10 +87,10 @@ $ sudo cp confsyncer-0.0.1-amd64     /usr/local/bin/confsyncer
    copy '~/.confsyncer/config.yaml' to '/tmp/confsyncer-20200713/.confsyncer/config.yaml' success
    ```
 
-4. modify crontab file to pull config every 1m
+4. add crontab task to pull config every 1 minute
 
     ```shell
-    # 
+    # set crontab task
     * * * * * bash -c "confsyncer pull"
     ```
 
@@ -128,9 +128,9 @@ $ sudo cp confsyncer-0.0.1-amd64     /usr/local/bin/confsyncer
    ```
 
 2. modify config file `~/.confsyncer/config.yaml `
-      ```shell
-      $ vim ~/.confsyncer/config.yaml
-      ```
+    ```shell
+    $ vim ~/.confsyncer/config.yaml
+    ```
 
 3. run confsyncer-gen with you confsyncer config
 
