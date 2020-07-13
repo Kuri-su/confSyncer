@@ -113,7 +113,10 @@ func createConfigFile(force bool) error {
 			log.Fatalln(err)
 		}
 
-		fmt.Printf("\x1b[32mSuccess! Create config file in %s \x1b[0m \n", cfgFile)
+		fmt.Printf("\n\x1b[32mSuccess!\x1b[0m \n\n"+
+			"Create config file in \x1b[32m %s \n"+
+			"You should modify it before use. \x1b[0m \n\n",
+			cfgFile)
 	}
 
 	return nil
@@ -129,7 +132,8 @@ func ShowConfig(*cobra.Command, []string) {
 	color.Green("\nThis is your config: \n%s \n", settingStr)
 }
 
-func GetFilesMaps() ([]Path, error) {
+// get files map
+func GetFilesMap() ([]Path, error) {
 	var maps []Path
 
 	marshal, err := jsoniter.MarshalToString(viper.Get("maps"))

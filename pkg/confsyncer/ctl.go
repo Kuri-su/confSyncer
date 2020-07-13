@@ -44,7 +44,7 @@ var (
 	version = "0.0.3"
 	// use it when need a default config
 	DefaultConfigContext = `---
-gitRepo: git@gitlab.com:examples/examples.git
+gitRepo: ""
 gitPullTimeInternal: 600 # second
 maps:
   - gitRepoPath: /.confsyncer/config.yaml
@@ -177,9 +177,10 @@ func VersionCmd(cmd *cobra.Command, args []string) {
 func initTmpDir() error {
 	err := unit.GitClone(viper.GetString("gitRepo"), TmpDirPath)
 	if err != nil {
-		return err
+		// TODO Replace to log
+		color.Red(fmt.Sprintf("git clone error! err: %s", err.Error()))
 	}
-	return nil
+	return err
 }
 
 func removeTmpDirCmd(cmd *cobra.Command, args []string) {

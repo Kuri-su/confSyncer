@@ -1,6 +1,6 @@
 # confsyncer
 
-[![](https://img.shields.io/badge/language-中文-333333.svg?longCache=true&style=flat-square&colorA=E62B1E)](README-cn.md)
+[![](https://img.shields.io/badge/language-English-333333.svg?longCache=true&style=flat-square&colorA=E62B1E)](README.md)
 
 A little sync files tool in the **Linux**.
 
@@ -12,7 +12,7 @@ A little sync files tool in the **Linux**.
 
 - 手动 Push 监视中的 文件到指定的 git 仓库
 - 自动/手动 从指定的 git 仓库 拉取文件到本地的指定位置
-- 基于 docker-compose 的一键式 生成与部署
+- 基于 docker-compose 的一键式部署
 
 ## Install
 ```shell
@@ -22,12 +22,12 @@ $ wget https://github.com/Kuri-su/confSyncer/eleases/download/v0.0.1/confsyncer-
 
 #### or
 ```shell
-# use confsyncer with docker-compose and confsyncerGen
+# use confsyncer with docker-compose and confsyncer-gen
 $ wget https://github.com/Kuri-su/confSyncer/eleases/download/v0.0.1/confsyncer-0.0.1-amd64 
-$ wget https://github.com/Kuri-su/confSyncer/eleases/download/v0.0.1/confsyncerGen-0.0.1-amd64
-$ chmod +x confsyncerGen-0.0.1-amd64 confsyncer-0.0.1-amd64
+$ wget https://github.com/Kuri-su/confSyncer/eleases/download/v0.0.1/confsyncer-gen-0.0.1-amd64
+$ chmod +x confsyncer-gen-0.0.1-amd64 confsyncer-0.0.1-amd64
 # install
-$ sudo cp confsyncerGen-0.0.1-amd64  /usr/local/bin/confsyncerGen 
+$ sudo cp confsyncer-gen-0.0.1-amd64 /usr/local/bin/confsyncer-gen 
 $ sudo cp confsyncer-0.0.1-amd64     /usr/local/bin/confsyncer
 ```
 
@@ -128,55 +128,25 @@ $ sudo cp confsyncer-0.0.1-amd64     /usr/local/bin/confsyncer
    ```
 
 2. modify config file `~/.confsyncer/config.yaml `
-      ```shell
-      $ vim ~/.confsyncer/config.yaml
-      ```
+    ```shell
+    $ vim ~/.confsyncer/config.yaml
+    ```
 
-3. run confsyncerGen with you confsyncer config
+3. run confsyncer-gen with you confsyncer config
 
    ```shell
    # run (然后使用 docker-compose 启动服务即可)
-   $ confsyncerGen && docker-compose up -f ~/.confsyncer/docker-compose.yaml -d 
+   $ confsyncer-gen && docker-compose up -f ~/.confsyncer/docker-compose.yaml -d 
    ```
 
-## 参数介绍
 
-```shell
-$ confsyncer help
-confsyncer
+## docker-compose.yaml Gen
 
-Usage:
-  confsyncer [command]
+-f config path
 
-Available Commands:
-  config      show config
-  daemon      daemon
-  help        Help about any command
-  init        initialization config
-  pull        pull
-  push        push
-  version     show version
+-o output path
 
-Flags:
-  -h, --help   help for confsyncer
-
-$ confsyncerGen help
-confsyncerGen
-
-Usage:
-  confsyncerGen [command]
-
-Available Commands:
-  config      show config
-  composeyaml show composeyaml
-  help        Help about any command
-  version     show version
-
-Flags:
-  -h, --help   help for confsyncer
-  -f           confsyncer config path
-  -o           output docker-compose.yaml
-```
+// TODO docs
 
 ## LICENSE
 
