@@ -12,7 +12,7 @@ A little sync files tool in the **Linux**.
 
 - 手动 Push 监视中的 文件到指定的 git 仓库
 - 自动/手动 从指定的 git 仓库 拉取文件到本地的指定位置
-- 基于 docker-compose 的一键式部署
+- 基于 docker-compose 的一键式 生成与部署
 
 ## Install
 ```shell
