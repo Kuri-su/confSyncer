@@ -15,4 +15,5 @@ cs:
 	${GOBUILD} -o _output/confsyncer ./cmd/confsyncer
 
 docker:
-	
+	docker rm -f confsycner; echo
+	docker build -t confsyncer .
