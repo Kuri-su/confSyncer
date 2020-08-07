@@ -65,11 +65,11 @@ func initCobra() {
 		Run:   run,
 	}
 	commands := []*cobra.Command{
-		&cobra.Command{
+		{
 			Use:   "config",
 			Short: "show config",
 		},
-		&cobra.Command{
+		{
 			Use:   "composeyaml",
 			Short: "show composeyaml",
 		},

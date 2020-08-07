@@ -4,4 +4,4 @@ service:
     image: kurisux/conf-syncer:latest
     restart: always
     volumes:
-    - ~/.confsyncer/config.yaml:~/.confsyncer/config.yaml
+      - ~/.confsyncer/config.yaml:~/.confsyncer/config.yaml
