@@ -9,15 +9,17 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 type (
-	DCCmd               string
+	DCCmd string
+
+	// struct of Docker-compose.yaml
 	DockerComposeStruct struct {
 		Version  string               `yaml:"version"`
 		Services map[string]Container `yaml:"services"`
 	}
-
 	Container struct {
 		Image   string   `yaml:"image"`
 		Restart string   `yaml:"restart"`
@@ -28,9 +30,9 @@ type (
 var (
 	// DC = Docker-Compose
 	dcCmd    = DCCmd("")
-	dcGenCmd = &cobra.Command{
-		Use:   "gen",
-		Short: "gen",
+	dcRunCmd = &cobra.Command{
+		Use:   "run",
+		Short: "run",
 		Run:   dcCmd.Gen,
 	}
 	dcRestartCmd = &cobra.Command{
@@ -38,18 +40,25 @@ var (
 		Short: "restart",
 		Run:   dcCmd.Restart,
 	}
+	dcStopCmd = &cobra.Command{
+		Use:   "stop",
+		Short: "stop",
+		Run:   dcCmd.Stop,
+	}
 )
 
 const (
 	ContainerName      = "confsyncer"
 	GenerateDCFileName = "docker-compose.yaml"
-)
 
-const (
+	// shell
 	restartShell = `cd %s \
 && docker-compose pull \
-&& docker-compose up -d \
-&& docker-compose restart`
+&& docker-compose up -d `
+	stopShell = `
+cd %s \
+&& docker-compose down
+`
 )
 
 // ====================================== commands code ====================================
@@ -75,7 +84,15 @@ func (d *DCCmd) Gen(cmd *cobra.Command, args []string) {
 func (d *DCCmd) Restart(cmd *cobra.Command, args []string) {
 	output, err := unit.RunCommandInShellGetOutput(fmt.Sprintf(restartShell, dirPath))
 	if err != nil {
-		color.Red(fmt.Sprintf("Run command failed! err: %s \n", err.Error()))
+		color.Red(fmt.Sprintf("Run restart command failed! err: %s \n", err.Error()))
+	}
+	fmt.Println(output)
+}
+
+func (d *DCCmd) Stop(cmd *cobra.Command, args []string) {
+	output, err := unit.RunCommandInShellGetOutput(fmt.Sprintf(stopShell, dirPath))
+	if err != nil {
+		color.Red(fmt.Sprintf("Run stop command failed! err: %s \n", err.Error()))
 	}
 	fmt.Println(output)
 }
@@ -98,7 +115,8 @@ func (d *DCCmd) buildupDockerComposeYaml() ([]byte, error) {
 
 	var volumes []string
 	for _, m := range maps {
-		volumes = append(volumes, fmt.Sprintf("%s:%s", m.Local, m.GitRepoPath))
+		containerPath := strings.Replace(m.Local, "~", "/root", 1)
+		volumes = append(volumes, fmt.Sprintf("%s:%s", m.Local, containerPath))
 	}
 
 	dc.Services[ContainerName] = Container{

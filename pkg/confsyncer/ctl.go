@@ -146,8 +146,9 @@ func init() {
 	// register dockerCompose commands
 	rootCmd.AddCommand(dockerCmd)
 	// register commands into dockerCmd
-	dockerCmd.AddCommand(dcGenCmd)
+	dockerCmd.AddCommand(dcRunCmd)
 	dockerCmd.AddCommand(dcRestartCmd)
+	dockerCmd.AddCommand(dcStopCmd)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
