@@ -140,6 +140,7 @@ func GetFilesMap() ([]Path, error) {
 	if err != nil {
 		return nil, err
 	}
+	println(marshal)
 	err = jsoniter.UnmarshalFromString(marshal, &maps)
 	if err != nil {
 		return nil, err
