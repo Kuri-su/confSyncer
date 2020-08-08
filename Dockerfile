@@ -28,6 +28,8 @@ RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux
 # step 1
 FROM alpine:latest
 
+RUN  apk add git --no-cache
+
 COPY --from=0 /usr/local/bin/confsyncer /usr/local/bin/
 
 CMD ["confsyncer","daemon"]
