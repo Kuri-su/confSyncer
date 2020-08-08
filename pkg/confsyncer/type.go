@@ -25,6 +25,6 @@ type Config struct {
 }
 
 type Path struct {
-	GitRepoPath string `yaml:"gitRepoPath"`
 	Local       string `yaml:"local"`
+	GitRepoPath string `yaml:"gitRepoPath"`
 }
