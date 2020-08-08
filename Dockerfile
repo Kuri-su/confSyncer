@@ -30,4 +30,4 @@ FROM alpine:latest
 
 COPY --from=0 /usr/local/bin/confsyncer /usr/local/bin/
 
-CMD ["confsyncer","deamon"]
+CMD ["confsyncer","daemon"]

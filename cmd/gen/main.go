@@ -62,7 +62,6 @@ func initCobra() {
 	rootCmd = &cobra.Command{
 		Use:   "confsyncerGen",
 		Short: `build docker-compose.yaml from confsyncer conf`,
-		Run:   run,
 	}
 	commands := []*cobra.Command{
 		{

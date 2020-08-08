@@ -95,6 +95,11 @@ maps:
 		PreRunE: configFileExistsCheckCmd,
 		Run:     DaemonPull,
 	}
+	dockerCmd = &cobra.Command{
+		Use:     "docker",
+		Short:   "docker",
+		PreRunE: configFileExistsCheckCmd,
+	}
 
 	// flags
 	initForce bool
@@ -121,6 +126,8 @@ func init() {
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+	//
+	// register commands
 	commands := []*cobra.Command{
 		initCmd,
 		configCmd,
@@ -129,14 +136,18 @@ func init() {
 		pullCmd,
 		deamonPullCmd,
 	}
-
-	// register commands
 	rootCmd.AddCommand(commands...)
-
 	// add postRun in all command
 	for _, command := range commands {
 		command.PostRun = removeTmpDirCmd
 	}
+
+	//
+	// register dockerCompose commands
+	rootCmd.AddCommand(dockerCmd)
+	// register commands into dockerCmd
+	dockerCmd.AddCommand(dcGenCmd)
+	dockerCmd.AddCommand(dcRestartCmd)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
