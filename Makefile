@@ -5,7 +5,7 @@ build:  cs
 
 cs:
 	bash -c "mkdir _output ; echo "
-	${GOBUILD} -o _output/confsyncer ./cmd/confsyncer
+	${GOBUILD} -o _output/confsyncer ./cmd/
 
 docker:
 	docker rm -f confsycner; echo
