@@ -44,7 +44,7 @@ var (
 	version = "0.0.3"
 	// use it when need a default config
 	DefaultConfigContext = `---
-gitRepo: ""
+gitRepo: "TODO"
 gitPullTimeInternal: 600 # second
 maps:
   - gitRepoPath: /.confsyncer/config.yaml
